@@ -1,0 +1,104 @@
+<canvas id="canvas" width="400" height="400">d</canvas>
+
+<script>
+    //Para o jogo começar quando inicia a pagina
+    window.onload = function(){
+        canvas = document.getElementById("canvas"); // armazenar na variavel
+        ctx = canvas.getContext('2d');
+
+        //evento das setas do teclado
+        document.addEventListener("keydown", function(e){
+            console.log(e.keyCode);
+                switch(e.keyCode) {  //capturar qual seta a pessoa apertou
+                case 37:
+                    velX = -1;
+                    velY = 0;   //direita cima = positivo
+                    break;      //esquerda baixo = negativo
+                case 38:
+                    velX = 0;
+                    velY = -1;
+                    break;
+                case 39:
+                    velX = 1;
+                    velY = 0;
+                    break;
+                case 40:
+                    velX = 0;
+                    velY = 1;
+                    break;
+
+            }    
+        });   
+
+        setInterval(jogo, 1000/10); //para chamar a function a cada determinado tempo
+
+    }
+
+    snake = [];
+    positionX = 10;
+    positionY = 10;
+    foodX = 15;
+    foodY = 15;
+    grid = 20;
+    velX = 0;
+    velY = 0;
+    tam = 5;
+
+    function jogo(){
+        positionX += velX;
+        positionY += velY;
+
+        //para a cobrinha passar para o outro lado do canvas do jogo e sair do outro lado
+        if(positionX < 0){
+            positionX = grid;
+        }
+
+        if(positionX > grid){
+            positionX = 0;
+        }
+
+        if(positionY < 0){
+            positionY = grid;
+        }
+
+        if(positionY > grid){
+            positionY = 0;
+        }
+        
+
+        ctx.fillStyle = "#95ff94"
+        ctx.fillRect(0, 0, canvas.width, canvas.height)     //responsavel por desenhar um retangulo no canvas
+    
+        //desenhando a cobrinha
+        
+        ctx.fillStyle = "black";
+        for(var i = 0; i < snake.length; i++ ){
+            ctx.fillRect(snake[i].x * grid, snake[i].y * grid, grid -1, grid -1);
+            //quando ela bater nela mesma o jogo acaba
+            if(snake[i].x == positionX && snake[i].y == positionY){
+                tam = 5;
+            }
+        }
+
+        snake.push({x: positionX, y: positionY}); // posicaçao inicial da cobrinha
+
+        while(snake.length > tam){
+            snake.shift();   // tira cada 1 valor da array
+        } 
+
+        //desenhando a comida
+        ctx.fillStyle = "red";
+        ctx.fillRect (foodX * grid , foodY * grid, grid -1, grid -1); //multiplica a variavel comida pelo grid para garantir que fique proporcional
+        //fillRect comando para fazer o retangulo
+
+        //comando para aumentar uma quadrado quando passa na comida
+        if(positionX == foodX && positionY == foodY){
+            tam++;
+            //quando a cobra passar pela comida, a comida some e aparece em outro lugar
+            foodX = Math.floor(Math.random() * grid );
+            foodY = Math.floor(Math.random() * grid );           
+
+        }
+    }
+
+</script>
